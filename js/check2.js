@@ -19,7 +19,8 @@ setInterval(function(){$.ajax({
                                     case 2:delay=l1;break;
                                     case 3:delay=l2;break;
 }
-                                    setTimeout(function(){ alert(data); 
+                                    setTimeout(function(){ var lastIndex = data.lastIndexOf(" ")
+									var str = data.substring(0, lastIndex);alert(str); 
 								 //alert(res[5]);
 								 $('#Porder').text(parseInt($('#Porder').text())+parseInt(res[5]));
 

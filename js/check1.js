@@ -20,7 +20,9 @@ setInterval(function(){$.ajax({
                                     case 3:delay=l4;break;
                                  }
 
-                                 setTimeout(function(){ alert(data);
+                                 setTimeout(function(){ var lastIndex = data.lastIndexOf(" ");
+									var str = data.substring(0, lastIndex);
+									alert(str);
                                     $('#Inv').text(parseInt($('#Inv').text())+parseInt(res[3]));
                                  if(parseInt($('#Inv').text())>parseInt($('#ul>span').text()))
                                  {

@@ -64,6 +64,7 @@ if($result)
 <script src="js/stage.js"></script>
 <script src="js/global.js"></script>
 <script src="js/transaction.js"></script>
+<script src="js/main.js"></script>
 <link rel="stylesheet" href="magnific-popup/magnific-popup.css"> 
 <script src="magnific-popup/jquery.magnific-popup.js"></script>
 <link rel="stylesheet" type="text/css" href="css/layout.css">
@@ -82,7 +83,7 @@ if($result)
 	<p id="Bcost">Backlog cost:<span>300</span></p><br><br>
 	<p id="bankres">Bank Reserve:<span>1000</span></p><br><br>
 	<p id="ul">Capacity:<span>35</span></p><br><br>
-	<p id="ce">Capacity Extension:<span>20</span></p>
+	<p id="ce">Extension Cost:<span>20</span></p><br><br>
 	</div>
 	</div>
 	
@@ -135,10 +136,10 @@ if($result)
 <button onclick="show()">View Transactions</button>
 
 <div class="box3" id="box3"style="display:none">
-	<p>SUBLET</p>
+	<p>SUBSIDIARY</p>
 	<input type="number" id="sublet" class="field" name="sublet" min="1">
 	<input type="button" id="subletbutton" class="button" onclick="sublet()" value="ok">
-    <p id="subletcost">Cost for 1 pdt: <span id="subcost">3</span></p> 
+    <p id="subletcost">Cost for 1 Product: <span id="subcost">3</span></p> 
     <p id="sublettime">Delay time:<span id="subtime">3</span></p> 
     <br>
     <p>LABOURERS</p>
@@ -156,259 +157,4 @@ if($result)
 
 </body>
 
-
-<script type="text/javascript">
-
-
-
-  var flag=0,backup=1;
-
-function labadd()
-{
-  var x= parseInt($('#clab>span').text()) + +$('#laboureradd').val(); $('#clab>span').text(x);
-  
-}
-
-function labsub()
-{
-var x= parseInt($('#clab>span').text()) - +$('#labourersub').val(); $('#clab>span').text(x);
-    
-}
-
-function labourer()
-{
-	var constanttimedelay=3; var products=$('#labsupply').val();
-    var people= parseInt($('#clab>span').text()); 
-    var labtimedelay= ((constanttimedelay*products)/people)*1000;
-    alert(labtimedelay);
-    setTimeout(function(){ 
-            	alert("labourer return");
-                              var x= parseInt($('#Inv').text())+ +products;
-                              $('#Inv').text(x);   }, labtimedelay);
-    supplybackup();
-}
-
-
-function sublet()
-{
-	        alert($('#sublet').val()*parseInt($('#subletcost>span').text()));
-	        var subletred=parseInt($('#bankres>span').text())-$('#sublet').val()*parseInt($('#subletcost>span').text())
-            $('#bankres>span').text(subletred);
-            var sublettime=parseInt($('#subletcost>span').text())*1000;
-
-            setTimeout(function(){ 
-            	alert("sublet return");
-                              var x= parseInt($('#Inv').text())+ +$('#sublet').val();
-                              $('#Inv').text(x);   }, sublettime);
-
-supplybackup();
-
-}
-////////////////START //////////////////////////////////////////////////////////////////////////////////////
-  function supplybackup()
-       {
-                         $.ajax({
-                            type:"post",
-                            url:"player.php",
-							//YOU HAD USED .VAL() HERE
-                            data: {curr:curr,backup:'1',inventory:$('#Inv').text(),porder:$('#Porder').text(),reserve:$('#bankres>span').text(),capacity:$('#ul>span').text()},
-                            success:function(data){
-                              console.log(data);
-                            }
-                               });
-       }
-//////////////////END ///////////////////////////////////////////////////////////////////////////////////////////////////////       
-	
-
-   function supply(){  
-                         flag=1;
-                         var supcheck;
-                         if(stage==4){
-                         	if($('#supplyTo').val()=='Wholesaler1'){
-                         		supcheck=parseInt($('#Porder1').text());
-                         	}
-
-                         	else{
-                         		supcheck=parseInt($('#Porder2').text());
-                         	}
-                         }
-
-                         else{
-
-                         	supcheck=parseInt($('#Porder').text());
-                         }
-
-
-						if(($('#supply').val()<=parseInt($('#Inv').text())) && ($('#supply').val()<=supcheck)){
-							//if retailer we call function calc
-							if(stage==1){
-							calculate();
-							}
-						
-						var prv=prev,fc,pr;
-						fc=fc3;pr=pr3;
-                         if(stage==4){
-                         	
-                         		if($('#supplyTo').val()=='Wholesaler1'){
-                         			prv=prev1;
-                         		}
-                         		else{
-                         			prv=prev2;
-                         		}
-
-                         } 
-
-                         if(stage==2){
-                         	fc=fc1;pr=pr1;
-                         }
-
-                         if(stage==3){
-                         	fc=fc2;pr=pr2;
-                         }
-
-
-
-
-                         $.ajax({
-                            type:"post",
-                            url:"player.php",
-                            data: {id:curr,to:prv,supply:$('#supply').val(), 
-									order:'0',
-                                   round:$('#Round>span').text(),
-                                   f:flag},
-                            success:function(data){
-                                //$("#result").html(data);
-								//alert(data);
-								$('#Porder').text(parseInt($('#Porder').text())-parseInt($('#supply').val()));
-								if($('#supplyTo').val()=='Wholesaler1'){
-                         			$('#Porder1').text(parseInt($('#Porder1').text())-parseInt($('#supply').val()));
-                         		}
-                         		else{
-                         			$('#Porder2').text(parseInt($('#Porder2').text())-parseInt($('#supply').val()));
-                         		}
-								$('#Inv').text(parseInt($('#Inv').text())-parseInt($('#supply').val()));
-								alert("supplied");
-								var temp=parseInt($('#bankres>span').text());
-                             	temp=temp+(fc+pr*$('#supply').val());
-                             	$('#bankres>span').text(temp);
-								supplybackup();
-                             },
-                             
-                          });}
-						  
-						  else{
-						alert("Invalid Transaction");}
-                         
-                      }
-
-
-
-
- function capacity(){
- 	 var tmp= parseInt($('#bankres>span').text())-parseInt($('#ce>span').text())*$('#ext').val(); 
-     $('#bankres>span').text(tmp);
-     tmp=parseInt($('#ul>span').text()) + +$('#ext').val();
-     $('#ul>span').text(tmp);
-     supplybackup();
-
- }
-
-              function order(){  
-                         flag=2; 
-                         var nxt=next,fc,pr;
-                         fc=fc3;
-                         pr=pr3;
-                         if(stage==1){
-                         	//alert($('#orderTo').val());
-                         		if($('#orderTo').val()=='Wholesaler1'){
-                         			nxt=next1;
-                         			fc=fc1;
-                         			pr=pr1;
-                         		}
-                         		else{
-                         			nxt=next2;
-                         			fc=fc2;
-                         			pr=pr2;
-                         		}
-                         } 
-
-                         $.ajax({
-                            type:"post",
-                            url:"player.php",
-                            data: {id:curr,to:nxt,order:$('#order').val(),
-				   supply:'0',
-                                   round:$('#Round>span').text(),
-                                   f:flag},
-                            success:function(data){
-                                alert("order has been placed");
-                                var temp=parseInt($('#bankres>span').text());
-                             	temp=temp-(fc+pr*$('#order').val());
-                             	$('#bankres>span').text(temp);
-                             	supplybackup();
-                          }
-                             });
-                             
-                      }
-    
-
-
-
-
-          window.onbeforeunload = function() {
-        return "Do not Refresh the game. You will lose all data."; }
-
-        window.onload=function(){
-          if(stage==1){
-            $('#prev').text('Customer');
-            $('#curr').text('Retailer');
-            $('#next').text('Wholesaler');
-            $('#orderTo').show();
-          }
-
-          else if(stage==2){
-            $('#prev').text('Retailer');
-            $('#curr').text('Wholesaler');
-            $('#next').text('DISTRIBUTOR');
-
-          }
-
-          else if(stage==3){
-            $('#prev').text('Wholesaler');
-            $('#curr').text('DISTRIBUTOR');
-            $('#next').text('Factory');
-          }
-
-          else if(stage==4){
-            $('#prev').text('DISTRIBUTOR');
-            $('#curr').text('Factory');
-            $('#next').text('');
-            $('#supplyTo').show();
-            $('#pending1').show();
-            $('#pending2').show();
-            $('#box3').show();
-           	
-          }
-
-
-          backup=1;
-                    $.ajax({
-                            type:"post",
-                            url:"backup.php",
-                            data: {backup:'1',curr:curr},
-                            success:function(data){
-							var res = data.split(" ");
-							$('#Inv').text(parseInt(res[0]));
-							$('#Porder').text(parseInt(res[1]));
-                            $('#bankres>span').text(parseInt(res[2]));
-                            $('#ul>span').text(parseInt(res[3]));
-                            $('#Icost>span').text(parseInt(res[4]));
-							$('#Bcost>span').text(parseInt(res[5]));
-                              
-                            }
-                               });
-                  }
-
-
-         
-</script>
 </html>
