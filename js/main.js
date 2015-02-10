@@ -84,25 +84,32 @@ supplybackup();
 							}
 						
 						var prv=prev,fc,pr;
-						fc=fc3;pr=pr3;
                          if(stage==4){
                          	
                          		if($('#supplyTo').val()=='Wholesaler1'){
                          			prv=prev1;
+									fc=fc3;
                          		}
                          		else{
                          			prv=prev2;
+									fc=fc4;
+										
                          		}
+								pr=sp4;
 
                          } 
 
                          if(stage==2){
-                         	fc=fc1;pr=pr1;
+                         	fc=fc1;pr=sp2;
                          }
 
                          if(stage==3){
-                         	fc=fc2;pr=pr2;
+                         	fc=fc2;pr=sp3;
                          }
+						 
+						 if(stage==1){
+							fc=0;
+							pr=sp1;}
 
 
 
@@ -127,8 +134,10 @@ supplybackup();
 								$('#Inv').text(parseInt($('#Inv').text())-parseInt($('#supply').val()));
 								alert("supplied");
 								var temp=parseInt($('#bankres>span').text());
+								var temp1=fc+pr*$('#supply').val();
                              	temp=temp+(fc+pr*$('#supply').val());
                              	$('#bankres>span').text(temp);
+								alert("you have profitted by "+temp1+" bucks");
 								supplybackup();
                              },
                              
@@ -154,8 +163,7 @@ supplybackup();
               function order(){  
                          flag=2; 
                          var nxt=next,fc,pr;
-                         fc=fc3;
-                         pr=pr3;
+						pr=pr3;
                          if(stage==1){
                          	//alert($('#orderTo').val());
                          		if($('#orderTo').val()=='Wholesaler1'){
@@ -169,6 +177,12 @@ supplybackup();
                          			pr=pr2;
                          		}
                          } 
+						 
+						 else if(stage==2){
+							fc=fc3;}
+							
+						else if(stage==3){
+							fc=fc4;}
 
                          $.ajax({
                             type:"post",
@@ -178,7 +192,9 @@ supplybackup();
                                    round:$('#Round>span').text(),
                                    f:flag},
                             success:function(data){
-                                alert("order has been placed");
+								var temp1=fc+pr*$('#order').val();
+								alert("The Order has cost you "+temp1+" bucks");
+                                //alert("order has been placed");
                                 var temp=parseInt($('#bankres>span').text());
                              	temp=temp-(fc+pr*$('#order').val());
                              	$('#bankres>span').text(temp);
@@ -197,9 +213,7 @@ supplybackup();
 
         window.onload=function(){
           if(stage==1){
-     
             $('#curr').text('Retailer');
-            
             $('#orderTo').show();
 			$('.innerBox1').append('<p id="details">Wholesaler1</p><br><br><p id="details">Fixed cost:<span>'+fc1+'</span></p><br><br><p id="details">Product cost:<span>'+pr1+'</span></p><br><br><p id="details">Lead time:<span>'+l1+'</span></p><br><br>');
 			$('.innerBox1').append('<p id="details">Wholesaler2</p><br><br><p id="details">Fixed cost:<span>'+fc2+'</span></p><br><br><p id="details">Product cost:<span>'+pr2+'</span></p><br><br><p id="details">Lead time:<span>'+l2+'</span></p><br><br>');
