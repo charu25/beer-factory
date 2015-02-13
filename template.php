@@ -3,13 +3,14 @@ include_once("config.lib.php");
 session_start();
 $_SESSION["id"]=$_POST['id'];
 $id=$_POST['id'];
-$var = date("h:i");
+$var = date("H:i:s");
+//echo $var;
 $d=date("Y-m-d");
 //echo $d;
 $sql="SELECT * 
 FROM  `timecheck` 
 WHERE DATE =  '$d'
-AND TIME < '23:00:00'
+AND TIME < '$var'
 ORDER BY TIME DESC 
 LIMIT 1";
 
@@ -17,6 +18,7 @@ $result=mysqli_query($conn,$sql);
 
 $row=mysqli_fetch_array($result);
 $roundNo=$row['sno'];
+//echo $roundNo;
 $result = mysqli_query($conn,"SELECT * FROM team WHERE Player1=$id OR Player2=$id OR Player3=$id OR Player4=$id");
 $prev=0;$next=0;$prev1=0;$prev2=0;$next1=0;$next2=0;
 if($result)

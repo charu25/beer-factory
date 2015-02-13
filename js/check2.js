@@ -22,7 +22,7 @@ setInterval(function(){$.ajax({
                                       }
                                     }
 
-                                                                  supplybackup();} 
+                                  supplybackup();} 
                                  }
                              });}, 1000);   
 

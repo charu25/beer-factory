@@ -122,6 +122,7 @@ $inventory=$_POST["inventory"];
 $porder=$_POST["porder"];
 $reserve=$_POST["reserve"];
 $capacity=$_POST["capacity"];
+$roundno=$_POST["roundno"];
 
   $sql= "SELECT * FROM  `backup` WHERE  `id` = '$curr'";
   $result=mysqli_query($conn,$sql); 
@@ -148,6 +149,70 @@ else {
 }
 
 
+$x="r".$roundno;
+$sql= "UPDATE  `inventory` SET  $x =$inventory WHERE  `id` ='$curr'";
+      if ($conn->query($sql) === TRUE) {echo $x;}
+
+}
+
+if (isset($_POST['roundno'])&&isset($_POST['inventory'])&&isset($_POST['curr'])) {
+
+  $roundno=$_POST['roundno'];$curr=$_POST['curr'];
+
+
+$sql="SELECT  `inventory` 
+FROM  `backup` 
+WHERE  `id` ='$curr'";
+$result=mysqli_query($conn,$sql);
+$row=mysqli_fetch_array($result);
+echo "inventory:".$row['inventory'];
+$inventory=$row['inventory'];
+//echo $roundno." ".$inventory." ".$curr;
+  
+$sql= "SELECT * FROM  `inventory` WHERE  `id` = '$curr'";
+
+$result=mysqli_query($conn,$sql);
+$row=mysqli_fetch_array($result);
+
+$x=$roundno-1;
+
+
+//echo $row[$seen];
+
+$flag=0;
+
+
+
+
+while($x>0)
+{
+	//echo $x; $x=$x-1;
+$seen="r".$x;
+
+//echo $row[$seen];
+if($row[$seen]==-1)
+{$x=$x-1; }
+//$sql="UPDATE  `inventory` SET  `$seen`=$inventory WHERE `id` = '$curr'"; $result=mysqli_query($conn,$sql); }
+else {break;}
+
+}
+ 
+ $inventory=$row['r'.$x];
+ echo $inventory;
+$x=$roundno-1;
+ while($x>0)
+{
+	//echo $x; $x=$x-1;
+$seen="r".$x;
+
+//echo $row[$seen];
+if($row[$seen]==-1)
+{$x=$x-1; 
+$sql="UPDATE  `inventory` SET  `$seen`=$inventory WHERE `id` = '$curr'"; $result=mysqli_query($conn,$sql); }
+else {break;}
+
+}
+ 
 }
 
 ?>

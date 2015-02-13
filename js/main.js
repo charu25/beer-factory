@@ -1,3 +1,5 @@
+
+
 var flag=0,backup=1;
 
 function labadd()
@@ -50,7 +52,7 @@ setInterval(function(){
                               var res = data.split(" ");
                               var roundtime=res[2]; 
                               var roundno=res[1];
-                              alert (roundno);
+                              alert ("roundno"+roundno);
                               //alert(roundtime);
                               var k= roundtime.split(":");
                               rm1=k[1]; rh=k[0]; 
@@ -77,9 +79,9 @@ setInterval(function(){
                                     {
                               	       
                               	       hflag=0; fflag=0;subflag=0;
-                                       alert("inside");
+                                       //alert("inside");
                               	       var y=parseInt($('#Inv').text())+parseInt($('#clab>span').text())*properlabourer;
-                              	       alert(y);
+                              	       //alert(y);
                               	       $('#Inv').text(y);
                                     }    
                                 } 
@@ -94,10 +96,45 @@ setInterval(function(){
 }
 
 
+var roundupdat=0;
+function roundupdate()
+{var prevround=rno;
+  //alert("prev"+prevround);
+  setInterval(function(){
+    $.ajax({type:"post",
+  url:"time.php",
+  data: {roundupdate:roundupdat},
+  success:function(data){
+    var res=data.split(' ');
+    prevround=rno;
+     rno=res[1]; 
+     //alert("yolo"+rno);
+     if(prevround!=rno){
+        alert("new round");
+        $('#Porder').text(0);
+     }
+    }
+  });},10000)
+  
+}
+
+
+function inventoryupdate(){
+  //alert("yo");
+  $.ajax({type:"post",
+  url:"player.php",
+  data: {roundno:rno,curr:curr,inventory:$('#Inv').text()},
+  success:function(data){
+    //alert("hey"); alert(data);
+    }
+  });
+}
+ 
+
 function sublet()
 {           
 	if(subflag==1)
-	      {  alert(subfc);
+	      {  //alert(subfc);
 	        alert($('#sublet').val()*parseInt($('#subletcost>span').text()));
 	        var subletred=parseInt($('#bankres>span').text())-(+subfc+$('#sublet').val()*parseInt($('#subletcost>span').text()));
             $('#bankres>span').text(subletred);
@@ -118,12 +155,12 @@ else
 
 ////////////////START //////////////////////////////////////////////////////////////////////////////////////
   function supplybackup()
-       {
+       {   alert(rno);
                          $.ajax({
                             type:"post",
                             url:"player.php",
 							//YOU HAD USED .VAL() HERE
-                            data: {curr:curr,backup:'1',inventory:$('#Inv').text(),porder:$('#Porder').text(),reserve:$('#bankres>span').text(),capacity:$('#ul>span').text()},
+                            data: {curr:curr,backup:'1',inventory:$('#Inv').text(),porder:$('#Porder').text(),reserve:$('#bankres>span').text(),capacity:$('#ul>span').text(),roundno:rno},
                             success:function(data){
                               console.log(data);
                             }
@@ -344,17 +381,22 @@ else
             $('#orderTo').show();
 			$('.innerBox1').append('<p id="details">Wholesaler1</p><br><br><p id="details">Fixed cost:<span>'+fc1+'</span></p><br><br><p id="details">Product cost:<span>'+pr1+'</span></p><br><br><p id="details">Lead time:<span>'+l1+'</span></p><br><br>');
 			$('.innerBox1').append('<p id="details">Wholesaler2</p><br><br><p id="details">Fixed cost:<span>'+fc2+'</span></p><br><br><p id="details">Product cost:<span>'+pr2+'</span></p><br><br><p id="details">Lead time:<span>'+l2+'</span></p><br><br>');
+          roundupdate();
+          inventoryupdate();
           }
 
           else if(stage==2){
             $('#curr').text('Wholesaler');
 			$('.innerBox1').append('<p id="details">Manifacturer</p><br><br><p id="details">Fixed cost:<span>'+fc3+'</span></p><br><br><p id="details">Product cost:<span>'+pr3+'</span></p><br><br><p id="details">Lead time:<span>'+l3+'</span></p><br><br>');	
+         roundupdate();
+         inventoryupdate();
           }
 
           else if(stage==3){
             $('#curr').text('DISTRIBUTOR');
             $('.innerBox1').append('<p id="details">Manifacturer</p><br><br><p id="details">Fixed cost:<span>'+fc3+'</span></p><br><br><p id="details">Product cost:<span>'+pr3+'</span></p><br><br><p id="details">Lead time:<span>'+l4+'</span></p><br><br>');	
-          
+          roundupdate();
+          inventoryupdate();
           }
 
           else if(stage==4){
@@ -364,6 +406,8 @@ else
             $('#pending2').show();
             $('#box3').show();
            	manufacturer();
+            roundupdate();
+            inventoryupdate();
           }
 
           backup=1;

@@ -54,7 +54,7 @@ echo $var; echo " ";
 
 $sql="SELECT * 
 FROM  `timecheck` 
-WHERE DATE =  '2015-02-12'
+WHERE DATE =  '2015-02-13'
 AND TIME <= '$var'
 ORDER BY TIME DESC 
 LIMIT 1";
@@ -94,6 +94,30 @@ else {$flag=1;break;}
 
 
 echo $x+1;*/
+}
+
+
+if(isset($_POST['roundupdate']))
+{
+$var = date("H:i");
+echo $var; echo " ";
+
+
+$sql="SELECT * 
+FROM  `timecheck` 
+WHERE DATE =  '2015-02-13'
+AND TIME <= '$var'
+ORDER BY TIME DESC 
+LIMIT 1";
+
+$result=mysqli_query($conn,$sql);
+
+$row=mysqli_fetch_array($result);
+$sno=$row['sno'];
+
+echo $sno; echo " ";
+
+echo $row['time']; echo " ";
 }
 
 ?>
