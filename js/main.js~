@@ -35,18 +35,26 @@ else
 
 function manufacturer()
 {
-	
+	/*var constanttimedelay=3; var products=$('#labsupply').val();
+    var people= parseInt($('#clab>span').text()); 
+    var labtimedelay= ((constanttimedelay*products)/people)*1000;
+    alert(labtimedelay);
+    setTimeout(function(){ 
+            	alert("labourer return");
+                              var x= parseInt($('#Inv').text())+ +products;
+                              $('#Inv').text(x);   }, labtimedelay);
+    supplybackup();*/
 
-mancheck=0;
+
 
 setInterval(function(){ 
 
 	$.ajax({
                             type:"post",
                             url:"time.php",
-                            data: {mancheck:mancheck},
+                            data: {},
                             success:function(data){
-                            
+                              
                               var res = data.split(" ");
                               var roundtime=res[2]; 
                               var roundno=res[1];
@@ -71,13 +79,15 @@ setInterval(function(){
                               //alert(currtime);
                                k= currtime.split(":");
                               cm=k[1]; ch=k[0]; 
+                              //alert(cm); alert(ch);
+                              //alert(cm);
                               if (ch==rh) 
-                              	{//alert("in");
+                              	{
                               		if(cm==rm1||cm==rm2||cm==rm3||cm==rm4||cm==rm5)
                                     {
                               	       
                               	       hflag=0; fflag=0;subflag=0;
-                                       alert("inside");
+                                       
                               	       var y=parseInt($('#Inv').text())+parseInt($('#clab>span').text())*properlabourer;
                               	       alert(y);
                               	       $('#Inv').text(y);
@@ -363,7 +373,7 @@ else
             $('#pending1').show();
             $('#pending2').show();
             $('#box3').show();
-           	manufacturer();
+           	
           }
 
           backup=1;

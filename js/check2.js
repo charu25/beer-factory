@@ -1,7 +1,7 @@
 setInterval(function(){$.ajax({
                             type:"post",
                             url:"player.php",
-                            data: {curr:curr,flag:2},
+                            data: {curr:curr,flag:2,round:rno},
                             success:function(data){console.log(data);
                                 if(data!='None')
                                { 

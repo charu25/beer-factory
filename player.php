@@ -62,9 +62,10 @@ else {echo "No records found";} }
 if(isset($_POST["curr"])){
 if($_POST["flag"]==2){
 $curr=$_POST["curr"];
+$rno=$_POST["round"];
 $query ="SELECT * 
 FROM  `player` 
-WHERE  `sendto` =  '$curr' AND `seen`='0' AND `flag`='2'
+WHERE  `sendto` =  '$curr' AND `seen`='0' AND `flag`='2' AND `round`='$rno'
 ORDER BY `sno` DESC
 LIMIT 1 ";
 $set=0;
@@ -78,7 +79,7 @@ $found=mysqli_num_rows($result);
   echo " ".$row['playerid']."";
   $set=1;
   } 
-  $query ="UPDATE player SET seen='1' WHERE sendto =  '$curr' AND seen='0' ORDER BY sno DESC LIMIT 1"; 
+  $query ="UPDATE player SET seen='1' WHERE sendto =  '$curr' AND seen='0' AND `round`='$rno' ORDER BY sno DESC LIMIT 1"; 
   $result=mysqli_query($conn,$query); }  }
   if($set==0)
 	echo "None";

@@ -3,7 +3,7 @@
 setInterval(function(){$.ajax({
                             type:"post",
                             url:"player.php",
-                            data: {curr:curr,flag:1},
+                            data: {curr:curr,flag:1,round:rno},
                             success:function(data){var delay=5000;
                                 if(data!='None')
                                  {  var res = data.split(" ");

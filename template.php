@@ -3,6 +3,20 @@ include_once("config.lib.php");
 session_start();
 $_SESSION["id"]=$_POST['id'];
 $id=$_POST['id'];
+$var = date("h:i");
+$d=date("Y-m-d");
+//echo $d;
+$sql="SELECT * 
+FROM  `timecheck` 
+WHERE DATE =  '$d'
+AND TIME < '23:00:00'
+ORDER BY TIME DESC 
+LIMIT 1";
+
+$result=mysqli_query($conn,$sql);
+
+$row=mysqli_fetch_array($result);
+$roundNo=$row['sno'];
 $result = mysqli_query($conn,"SELECT * FROM team WHERE Player1=$id OR Player2=$id OR Player3=$id OR Player4=$id");
 $prev=0;$next=0;$prev1=0;$prev2=0;$next1=0;$next2=0;
 if($result)
@@ -53,7 +67,7 @@ if($result)
 
  echo"<script> var team_id=$team_id; </script>";
  echo "<script>var curr=$id;var next=$next;var prev=$prev;var stage=$stage;</script>";
- echo "<script>var prev1=$prev1;var prev2=$prev2; var next1=$next1;var next2=$next2;</script>";
+ echo "<script>var prev1=$prev1;var prev2=$prev2; var next1=$next1;var next2=$next2;var rno=$roundNo;</script>";
 
 ?>
 
@@ -136,20 +150,18 @@ if($result)
 <button onclick="show()">View Transactions</button>
 
 <div class="box3" id="box3"style="display:none">
-	<p>SUBSIDIARY</p>
+	<p>SUBLET</p>
 	<input type="number" id="sublet" class="field" name="sublet" min="1">
 	<input type="button" id="subletbutton" class="button" onclick="sublet()" value="ok">
-    <p id="subletcost">Cost for 1 Product: <span id="subcost">3</span></p> 
+    <p id="subletcost">Cost for 1 pdt: <span id="subcost">38</span></p> 
     <p id="sublettime">Delay time:<span id="subtime">3</span></p> 
     <br>
     <p>LABOURERS</p>
 	<p id="clab">Current labourers:<span id="currlab">20</span></p>
-	Supply:<input type="number" id="labsupply" class="field" name="labsupply" min="1">
-	<input type="button" id="labsup" class="button" onclick="labourer()" value="ok">
-	<p>labourer add</p>
+	<p>Hire</p>
     <input type="number" id="laboureradd" class="field" name="laboureradd" min="1">
 	<input type="button" id="labadd" class="button" onclick="labadd()" value="ok">
-    <p>labourer sub</p>
+    <p>Fire</p>
     <input type="number" id="labourersub" class="field" name="labourersub" min="1">
 	<input type="button" id="labsub" class="button" onclick="labsub()" value="ok">
     
